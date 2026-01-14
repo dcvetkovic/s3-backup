@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Enable S3 bucket versioning to keep multiple revisions of backups
 # Run this once when setting up your S3 bucket
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Load environment variables
@@ -14,7 +14,7 @@ if [ ! -f "$ENV_FILE" ]; then
     echo "Please copy config/.env.example to config/.env and fill in your credentials"
     exit 1
 fi
-source "$ENV_FILE"
+. "$ENV_FILE"
 
 # Configure AWS CLI
 export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"

@@ -1,8 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
+# Ensure we're running in bash
+if [ -z "$BASH_VERSION" ]; then
+    echo "Error: This script requires bash. Run with: bash $0"
+    exit 1
+fi
+
 # Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Load environment variables
@@ -11,7 +17,7 @@ if [ ! -f "$ENV_FILE" ]; then
     echo "Error: Environment file not found at $ENV_FILE"
     exit 1
 fi
-source "$ENV_FILE"
+. "$ENV_FILE"
 
 # Configuration
 BACKUP_DIR="/tmp/pg_backup"

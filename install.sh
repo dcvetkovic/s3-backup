@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Installation script for PostgreSQL S3 Backup System
 # Run this script on your production server
 
@@ -10,7 +10,7 @@ echo "==================================="
 echo ""
 
 # Get the directory where this script is located
-INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Check for required tools
 echo "Checking dependencies..."
