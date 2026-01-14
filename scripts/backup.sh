@@ -22,7 +22,7 @@ fi
 # Configuration
 BACKUP_DIR="/tmp/pg_backup"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="${BACKUP_DIR}/backup_${TIMESTAMP}.sql.gz"
+BACKUP_FILE="${BACKUP_DIR}/backup_${TIMESTAMP}.tar"
 LOG_FILE="${PROJECT_DIR}/logs/backup.log"
 
 # Create directories if they don't exist
