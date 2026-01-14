@@ -59,14 +59,21 @@ error_handler() {
 
     # Send Telegram notification
     local hostname=$(hostname)
-    local error_message="<b>Database Backup Failed</b>
+    local last_logs=$(tail -5 "$LOG_FILE" 2>/dev/null | head -4 || echo "No logs available")
+    local error_message="🚨🚨🚨 <b>DATABASE BACKUP FAILED</b> 🚨🚨🚨
+
+⚠️ <b>IMMEDIATE ATTENTION REQUIRED</b> ⚠️
 
 <b>Server:</b> ${hostname}
 <b>Database:</b> ${PGDATABASE}
+<b>Host:</b> ${PGHOST}:${PGPORT}
+<b>S3 Target:</b> s3://${S3_BUCKET}/${S3_PATH}
 <b>Time:</b> $(date '+%Y-%m-%d %H:%M:%S')
-<b>Error:</b> Backup process failed at line ${line_number}
+<b>Exit Code:</b> ${exit_code}
+<b>Failed At:</b> Line ${line_number}
 
-Please check the logs at: ${LOG_FILE}"
+<b>Recent Logs:</b>
+<pre>${last_logs}</pre>"
 
     send_telegram_notification "$error_message"
     cleanup
@@ -112,6 +119,18 @@ main() {
 
     # Cleanup
     cleanup
+
+    # Send success notification
+    local hostname=$(hostname)
+    local success_message="✅ <b>Database Backup Successful</b>
+
+<b>Server:</b> ${hostname}
+<b>Database:</b> ${PGDATABASE}
+<b>Size:</b> ${BACKUP_SIZE}
+<b>Time:</b> $(date '+%Y-%m-%d %H:%M:%S')
+<b>Location:</b> s3://${S3_BUCKET}/${S3_PATH}"
+
+    send_telegram_notification "$success_message"
 
     log "Backup completed successfully"
 }
