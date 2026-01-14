@@ -22,7 +22,7 @@ fi
 # Configuration
 BACKUP_DIR="/tmp/pg_backup"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="${BACKUP_DIR}/backup_${TIMESTAMP}.tar"
+BACKUP_FILE="${BACKUP_DIR}/backup_${TIMESTAMP}.sql.gz"
 LOG_FILE="${PROJECT_DIR}/logs/backup.log"
 
 # Create directories if they don't exist
@@ -85,8 +85,7 @@ main() {
 
     # Create backup using pg_dump with compression
     log "Creating database dump..."
-    pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
-        --no-owner --no-acl | gzip > "$BACKUP_FILE"
+    pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" "$PGDATABASE" | gzip > "$BACKUP_FILE"
 
     # Verify backup file exists and has content
     if [ ! -s "$BACKUP_FILE" ]; then
