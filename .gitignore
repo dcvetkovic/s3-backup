@@ -1,0 +1,9 @@
+# Environment files with credentials
+config/.env
+
+# Logs
+logs/
+
+# Temporary backup files
+*.sql
+*.sql.gz
