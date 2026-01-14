@@ -16,11 +16,12 @@ INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "Checking dependencies..."
 
 check_command() {
-    if ! command -v "$1" &> /dev/null; then
+    if command -v "$1" >/dev/null 2>&1 || which "$1" >/dev/null 2>&1; then
+        echo "  [OK] $1 found"
+    else
         echo "ERROR: $1 is not installed. Please install it first."
         exit 1
     fi
-    echo "  ✓ $1 found"
 }
 
 check_command pg_dump
