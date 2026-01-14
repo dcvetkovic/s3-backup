@@ -23,6 +23,7 @@ fi
 BACKUP_DIR="/tmp/pg_backup"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="${BACKUP_DIR}/backup_${TIMESTAMP}.sql.gz"
+S3_DEST="${S3_PATH}/backup_${TIMESTAMP}.sql.gz"
 LOG_FILE="${PROJECT_DIR}/logs/backup.log"
 
 # Create directories if they don't exist
@@ -67,7 +68,7 @@ error_handler() {
 <b>Server:</b> ${hostname}
 <b>Database:</b> ${PGDATABASE}
 <b>Host:</b> ${PGHOST}:${PGPORT}
-<b>S3 Target:</b> s3://${S3_BUCKET}/${S3_PATH}
+<b>S3 Target:</b> s3://${S3_BUCKET}/${S3_DEST}
 <b>Time:</b> $(date '+%Y-%m-%d %H:%M:%S')
 <b>Exit Code:</b> ${exit_code}
 <b>Failed At:</b> Line ${line_number}
@@ -104,15 +105,15 @@ main() {
     log "Backup created successfully. Size: $BACKUP_SIZE"
 
     # Upload to S3
-    log "Uploading backup to S3: s3://${S3_BUCKET}/${S3_PATH}"
+    log "Uploading backup to S3: s3://${S3_BUCKET}/${S3_DEST}"
 
     # Configure AWS CLI with credentials
     export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
     export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
     export AWS_DEFAULT_REGION="$AWS_REGION"
 
-    # Upload to S3 (versioning will keep previous versions)
-    aws s3 cp "$BACKUP_FILE" "s3://${S3_BUCKET}/${S3_PATH}" \
+    # Upload to S3
+    aws s3 cp "$BACKUP_FILE" "s3://${S3_BUCKET}/${S3_DEST}" \
         --storage-class STANDARD_IA
 
     log "Backup uploaded successfully to S3"
@@ -128,7 +129,7 @@ main() {
 <b>Database:</b> ${PGDATABASE}
 <b>Size:</b> ${BACKUP_SIZE}
 <b>Time:</b> $(date '+%Y-%m-%d %H:%M:%S')
-<b>Location:</b> s3://${S3_BUCKET}/${S3_PATH}"
+<b>Location:</b> s3://${S3_BUCKET}/${S3_DEST}"
 
     send_telegram_notification "$success_message"
 
